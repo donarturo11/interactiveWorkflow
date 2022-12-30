@@ -25,7 +25,10 @@ jobs:
     - name: Fetch dependencies
       run: |
            mkdir ~/artifacts
-           
+
+    - name: Install dependencies
+      run: brew install cmake extra-cmake-modules
+
     - name: Fetch qt
       run: |
            mkdir -v ~/download/
@@ -40,7 +43,7 @@ jobs:
            cd ~/src/qt-everywhere-src-6.4.1
            mkdir build
            cd build
-           ./configure .. -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" -DCMAKE_INSTALL_PREFIX=~/artifacts/qt6-universal
+           cmake .. -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" -DCMAKE_INSTALL_PREFIX=~/artifacts/qt6-universal
       
     - name: Build qt
       run: |
