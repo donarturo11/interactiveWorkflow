@@ -42,6 +42,7 @@ jobs:
       run: |
            cd ~/src/qt-everywhere-src-6.4.1
            ./configure \
+           -prefix ~/artifacts/qt6-universal/ \
            -qt-sqlite \
            -qt-pcre \
            -qt-zlib \
@@ -57,7 +58,7 @@ jobs:
 
     - name: Build qt
       run: |
-           cmake --build . --parallel
+           cmake --build .
 
     - name: Install qt
       run: |
