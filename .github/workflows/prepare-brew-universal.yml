@@ -48,8 +48,8 @@ jobs:
       run: |
            cd ~/brew-mod
            mv universal brew-monterey-universal
-           
-
+           tar -czf brew-monterey-universal.tar.gz brew-monterey-universal/
+           rm -Rf brew-monterey-universal
 
     - name: Upload tuningTrainer-mac
       uses: actions/upload-artifact@v3.0.0
