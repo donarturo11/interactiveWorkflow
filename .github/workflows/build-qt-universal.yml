@@ -27,7 +27,7 @@ jobs:
            mkdir ~/artifacts
 
     - name: Install dependencies
-      run: brew install cmake extra-cmake-modules
+      run: brew install cmake extra-cmake-modules jpeg sqlite libpng pcre2 harfbuzz freetype libb2 double-conversion
 
     - name: Fetch qt
       run: |
@@ -41,19 +41,28 @@ jobs:
     - name: Prepare build qt
       run: |
            cd ~/src/qt-everywhere-src-6.4.1
-           mkdir build
-           cd build
-           cmake .. -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" -DCMAKE_INSTALL_PREFIX=~/artifacts/qt6-universal
-      
+           ./configure \
+           -qt-sqlite \
+           -qt-pcre \
+           -qt-zlib \
+           -qt-freetype \
+           -qt-libpng \
+           -qt-libjpeg \
+           -qt-harfbuzz \
+           -no-feature-sql-psql \
+           -no-feature-sql-mysql \
+           -no-feature-sql-odbc \
+           -- \
+           -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
+
     - name: Build qt
       run: |
-           cd build
-           cmake --build .. --parallel
+           cmake --build . --parallel
 
     - name: Install qt
       run: |
            cd build
-           cmake --install ..      
+           cmake --install .
                      
     - name: QT6 universal
       uses: actions/upload-artifact@v3.0.0
