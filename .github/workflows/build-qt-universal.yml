@@ -28,11 +28,13 @@ jobs:
            
     - name: Fetch qt
       run: |
-           mkdir download/
-           mkdir src/
+           mkdir -v download/
+           mkdir -v src/
            cd download/
-           wget https://download.qt.io/official_releases/qt/6.4/6.4.1/single/qt-everywhere-src-6.4.1.tar.xz
-           tar -xJf qt-everywhere-src-6.4.1.tar.xz -C ~/src
+           wget -q https://download.qt.io/official_releases/qt/6.4/6.4.1/single/qt-everywhere-src-6.4.1.tar.xz
+           cd ~/src
+           tar -xJf ~/src/qt-everywhere-src-6.4.1.tar.xz
+           ls -lah
            
     - name: Prepare build qt
       run: |
