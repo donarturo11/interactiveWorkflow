@@ -33,11 +33,11 @@ jobs:
            cd ~/download/
            wget -q https://download.qt.io/official_releases/qt/6.4/6.4.1/single/qt-everywhere-src-6.4.1.tar.xz
            tar -xJf qt-everywhere-src-6.4.1.tar.xz -C ~/src
-           ls -lah
+           ls ~/src -lah
            
     - name: Prepare build qt
       run: |
-           cd ~/src/*
+           cd ~/src/qt-everywhere-src-6.4.1
            mkdir build
            cd build
            ./configure .. -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" -DCMAKE_INSTALL_PREFIX=~/artifacts/qt6-universal
