@@ -30,7 +30,7 @@ jobs:
       run: |
            mkdir -v ~/download/
            mkdir -v ~/src/
-           cd download/
+           cd ~/download/
            wget -q https://download.qt.io/official_releases/qt/6.4/6.4.1/single/qt-everywhere-src-6.4.1.tar.xz
            cd ~/src
            tar -xJf ~/src/qt-everywhere-src-6.4.1.tar.xz
