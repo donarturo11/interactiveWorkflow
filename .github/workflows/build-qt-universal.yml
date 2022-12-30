@@ -33,7 +33,7 @@ jobs:
            cd ~/download/
            wget -q https://download.qt.io/official_releases/qt/6.4/6.4.1/single/qt-everywhere-src-6.4.1.tar.xz
            cd ~/src
-           tar -xJf ~/src/qt-everywhere-src-6.4.1.tar.xz
+           tar -vxJf ~/src/qt-everywhere-src-6.4.1.tar.xz
            ls -lah
            
     - name: Prepare build qt
