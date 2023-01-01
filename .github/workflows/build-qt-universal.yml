@@ -38,7 +38,7 @@ jobs:
            mkdir ~/artifacts
 
     - name: Install dependencies
-      run: brew install cmake extra-cmake-modules jpeg sqlite libpng pcre2 harfbuzz freetype libb2 double-conversion
+      run: brew install ccache cmake extra-cmake-modules jpeg sqlite libpng pcre2 harfbuzz freetype libb2 double-conversion
 
     - name: Fetch qt
       run: |
