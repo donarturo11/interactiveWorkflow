@@ -1,6 +1,17 @@
 name: Build MacOS Monterey
 
 on:
+  workflow_dispatch:
+    inputs:
+      debug_enabled:
+        type: boolean
+        description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'     
+        required: false
+        default: false
+      tags:
+        description: 'Test scenario tags'
+        required: true 
+        type: string  
   push:
     branches:
        - main
@@ -70,4 +81,12 @@ jobs:
       with:
         name: qt6-universal
         path: ~/artifacts/
+        
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+      if: ${{ failure() }}
+      with:
+          limit-access-to-actor: true
+          #install-dependencies: false
+#      timeout-minutes: 60          
         
