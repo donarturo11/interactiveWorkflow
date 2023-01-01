@@ -43,17 +43,33 @@ jobs:
            ./configure
            make
            sudo make install
+           export PATH=/opt/local/bin:/opt/local/sbin:$PATH
            
-                     
+    - name: Install dependencies
+      run: |
+           /opt/local/bin/port mpkg -N nodejs16 +universal
+
+    - name: Install Qt6
+      run: |
+           /opt/local/bin/port mpkg -N qt6 +universal
+           
+    - name: Prepare packages
+      run: |
+          mkdir ~/artifacts/pkg
+          for i in $(find /opt/local -name *.pkg)
+          do
+          cp $i ~/artifacts/pkg
+          done
+           
     - name: QT6 universal
       uses: actions/upload-artifact@v3.0.0
       with:
-        name: qt6-universal
+        name: qt6-universal-macports
         path: ~/artifacts/
         
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
-#      if: ${{ failure() }}
+      if: ${{ failure() }}
       with:
           limit-access-to-actor: true
           #install-dependencies: false
