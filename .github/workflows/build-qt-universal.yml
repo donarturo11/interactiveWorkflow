@@ -43,6 +43,7 @@ jobs:
            ./configure --with-universal-archs="x86_64 arm64"
            make
            sudo make install
+           sudo bash -c "echo \"+universal\" >> /opt/local/etc/macports/variants.conf"
            sudo /opt/local/bin/port selfupdate
            
     - name: Install dependencies
