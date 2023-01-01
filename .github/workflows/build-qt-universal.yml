@@ -33,48 +33,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Fetch dependencies
+    - name: Prepare MacPorts
       run: |
-           mkdir ~/artifacts
-
-    - name: Install dependencies
-      run: brew install ccache cmake extra-cmake-modules jpeg sqlite libpng pcre2 harfbuzz freetype libb2 double-conversion
-
-    - name: Fetch qt
-      run: |
-           mkdir -v ~/download/
-           mkdir -v ~/src/
-           cd ~/download/
-           wget -q https://download.qt.io/official_releases/qt/6.4/6.4.1/single/qt-everywhere-src-6.4.1.tar.xz
-           tar -xJf qt-everywhere-src-6.4.1.tar.xz -C ~/src
-           ls -lah ~/src
+           curl -O https://distfiles.macports.org/MacPorts/MacPorts-2.8.0.tar.bz2
+           tar xf MacPorts-2.8.0.tar.bz2
+           $ cd MacPorts-2.8.0/
+           ./configure
+           make
+           sudo make install
            
-    - name: Prepare build qt
-      run: |
-           cd ~/src/qt-everywhere-src-6.4.1
-           ./configure \
-           -prefix ~/artifacts/qt6-universal/ \
-           -qt-sqlite \
-           -qt-pcre \
-           -qt-zlib \
-           -qt-freetype \
-           -qt-libpng \
-           -qt-libjpeg \
-           -qt-harfbuzz \
-           -no-feature-sql-psql \
-           -no-feature-sql-mysql \
-           -no-feature-sql-odbc \
-           -- \
-           -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
-
-    - name: Build qt
-      run: |
-           cmake --build .
-
-    - name: Install qt
-      run: |
-           cd build
-           cmake --install .
                      
     - name: QT6 universal
       uses: actions/upload-artifact@v3.0.0
@@ -84,7 +51,7 @@ jobs:
         
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
-      if: ${{ failure() }}
+#      if: ${{ failure() }}
       with:
           limit-access-to-actor: true
           #install-dependencies: false
