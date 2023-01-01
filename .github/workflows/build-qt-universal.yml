@@ -43,7 +43,6 @@ jobs:
            ./configure
            make
            sudo make install
-           echo "PATH=/opt/local/bin:/opt/local/sbin:\$PATH" >> $GITHUB_ENV
            sudo /opt/local/bin/port selfupdate
            
     - name: Install dependencies
