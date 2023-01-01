@@ -43,15 +43,16 @@ jobs:
            ./configure
            make
            sudo make install
-           export PATH=/opt/local/bin:/opt/local/sbin:$PATH
+           echo "PATH=/opt/local/bin:/opt/local/sbin:\$PATH" >> $GITHUB_ENV
+           sudo /opt/local/bin/port selfupdate
            
     - name: Install dependencies
       run: |
-           /opt/local/bin/port mpkg -N nodejs16 +universal
+           sudo /opt/local/bin/port pkg -N nodejs16 +universal
 
     - name: Install Qt6
       run: |
-           /opt/local/bin/port mpkg -N qt6 +universal
+           sudo /opt/local/bin/port pkg -N qt6 +universal
            
     - name: Prepare packages
       run: |
