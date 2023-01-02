@@ -48,17 +48,17 @@ jobs:
            
     - name: Install dependencies
       run: |
-           sudo /opt/local/bin/port install -N nodejs16 +universal
+           sudo /opt/local/bin/port -s install -N nodejs16 +universal
 
     - name: Install Qt6
       run: |
-           sudo /opt/local/bin/port install -N qt6 +universal
+           sudo /opt/local/bin/port -s install -N qt6 +universal
            
            
     - name: Prepare packages
       run: |
-          sudo /opt/local/bin/port pkg -N qt6 +universal
-          sudo /opt/local/bin/port pkg -N nodejs16 +universal
+          sudo /opt/local/bin/port -s pkg -N qt6 +universal
+          sudo /opt/local/bin/port -s pkg -N nodejs16 +universal
           mkdir ~/artifacts/pkg
           for i in $(find /opt/local -name *.pkg)
           do
