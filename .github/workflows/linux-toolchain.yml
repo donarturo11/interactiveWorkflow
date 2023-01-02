@@ -46,16 +46,19 @@ jobs:
     - name: Get Qt
       run: |
            source ~/.bashrc
+           echo "get QT"
            ./scripts/aqt/get_qt.sh
 
     - name: Get osxcross
       run: |
            source ~/.bashrc
+           echo "get osxcross"
            ./scripts/aqt/get_osxcross.sh
 
     - name: Install packages
       run: |
            source ~/.bashrc
+           echo "install packages"
            ./scripts/aqt/install_packages.sh
 
     - name: Prepare artifacts
