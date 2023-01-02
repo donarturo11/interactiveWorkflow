@@ -44,6 +44,7 @@ jobs:
            make
            sudo make install
            sudo /opt/local/bin/port selfupdate
+           sudo bash -c "echo \"+universal\" >> /opt/local/etc/macports/variants.conf"
 
     - name: Install dependencies
       run: |
@@ -73,9 +74,21 @@ jobs:
                       zlib \
                       zstd
            do
-           ARGS="${ARGS} install ${i} +universal"
+           ARGS="${ARGS} ${i} "
            sudo /opt/local/bin/port ${ARGS}
            done
+
+    - name: Prepare backup MacPorts
+      run: |
+          mkdir ~/MacPorts-mod/
+          sudo tar -czf ~/MacPorts-mod/MacPorts-mod.tar.gz /opt/local
+          sudo chown $(whoami) ~/artifacts/MacPorts-mod.tar.gz
+
+    - name: Upload MacPorts
+      uses: actions/upload-artifact@v3.0.0
+      with:
+        name: MacPorts-mod
+        path: ~/MacPorts-mod/
 
     - name: Fetch QT6
       run: |
@@ -88,6 +101,7 @@ jobs:
            ./configure -release -static -appstore-compliant -no-pch -no-dbus -no-icu -qt-pcre -system-zlib -ssl -openssl-linked -no-cups -qt-libpng -qt-libjpeg -no-feature-testlib -no-feature-concurrent -- \
                        -D CMAKE_OSX_ARCHITECTURES="x86_64;arm64" \
                        -D QT_BUILD_EXAMPLES=OFF \
+                       -D CMAKE_INSTALL_PREFIX=/opt/local \
                        -D CMAKE_PREFIX_PATH=/opt/local
 
     - name: Build QT6
