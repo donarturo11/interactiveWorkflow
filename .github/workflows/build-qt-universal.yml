@@ -43,11 +43,11 @@ jobs:
            ./configure
            make
            sudo make install
-           /opt/local/bin/port selfupdate
+           sudo /opt/local/bin/port selfupdate
 
     - name: Install dependencies
       run: |
-           /opt/local/bin/port install \
+           sudo /opt/local/bin/port install \
                       assimp \
                       brotli \
                       cmake \
