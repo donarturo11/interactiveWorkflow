@@ -33,13 +33,19 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Prepare MacPorts
+    - name: Prepare Dependencies
       run: |
            brew install --only-dependencies qt@6
            brew install ccache
 
+    - name: Fetch QT6
+      run: |
+           wget -q https://download.qt.io/official_releases/qt/6.4/6.4.1/single/qt-everywhere-src-6.4.1.tar.xz
+           tar -xJf qt*
+
     - name: Configure QT6
       run: |
+           cd qt*
            ./configure -- -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
 
     - name: Build QT6
