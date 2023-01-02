@@ -41,7 +41,7 @@ jobs:
            source ~/.aqt_set_env
 
     - name: Install dependencies
-      run: apt-get install -y sudo git openssh-client ca-certificates curl python3 locales clang genisoimage
+      run: sudo apt-get install -y openssh-client ca-certificates curl python3 locales clang genisoimage
 
     - name: Get Qt
       run: |

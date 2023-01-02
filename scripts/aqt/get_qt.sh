@@ -10,32 +10,32 @@ root_dir=$PWD
 [ "$root_dir" != '/' ] || root_dir=""
 
 # Init the package system
-apt update
+sudo apt update
 
 echo
 echo '--> Save the original installed packages list'
 echo
 
-dpkg --get-selections | cut -f 1 > /tmp/packages_orig.lst
+sudo dpkg --get-selections | cut -f 1 > /tmp/packages_orig.lst
 
 echo
 echo '--> Install the required packages to install Qt'
 echo
 
-apt install -y git python3-pip libglib2.0-0
+sudo apt install -y git python3-pip libglib2.0-0
 pip3 install --no-cache-dir "$AQT_VERSION"
 
 echo
 echo '--> Download & install the Qt library using aqt'
 echo
 
-aqt install-qt -O "$QT_PATH" mac desktop "$QT_VERSION"
+sudo aqt install-qt -O "$QT_PATH" mac desktop "$QT_VERSION"
 
 # Installing tools to execute cross-platform
-aqt install-qt -O "$QT_PATH" linux desktop "$QT_VERSION" gcc_64
-aqt install-src -O "$QT_PATH" linux "$QT_VERSION" --archives qtbase # Contains macdeployqt
-aqt install-tool -O "$QT_PATH" linux desktop tools_cmake
-aqt install-tool -O "$QT_PATH" linux desktop tools_ninja
+sudo aqt install-qt -O "$QT_PATH" linux desktop "$QT_VERSION" gcc_64
+sudo aqt install-src -O "$QT_PATH" linux "$QT_VERSION" --archives qtbase # Contains macdeployqt
+sudo aqt install-tool -O "$QT_PATH" linux desktop tools_cmake
+sudo aqt install-tool -O "$QT_PATH" linux desktop tools_ninja
 
 pip3 freeze | xargs pip3 uninstall -y
 
@@ -43,7 +43,7 @@ echo
 echo '--> Preparing cross-tools'
 echo
 
-apt install -y libclang-dev
+sudo apt install -y libclang-dev
 
 # Patch the macdeployqt tool
 cat - <<\EOF | patch -p 1 "$QT_MACOS/../Src/qtbase/src/tools/macdeployqt/shared/shared.cpp"
@@ -131,5 +131,5 @@ grep -Fxv -f /tmp/packages_orig.lst /tmp/packages_curr.lst | xargs apt remove -y
 
 # Complete the cleaning
 
-apt -qq clean
+sudo apt -qq clean
 rm -rf /var/lib/apt/lists/*

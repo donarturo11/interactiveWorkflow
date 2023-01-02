@@ -5,7 +5,7 @@
 [ "$ADDITIONAL_PACKAGES" ] || ADDITIONAL_PACKAGES='build-essential ninja-build'
 
 # Init package system
-apt update
+sudo apt update
 
 echo
 echo '--> Locating the shared libs required for the installed tools'
@@ -18,14 +18,14 @@ echo
 echo '--> Locating packages to provide the required shared libs'
 echo
 
-apt install -y apt-file
-apt-file update
+sudo apt install -y apt-file
+sudo apt-file update
 
 while read line ; do apt-file find $line | grep '^lib' | head -1; done < /tmp/not_found_libs.lst | tee /tmp/to_install_libs.lst
 
 # TODO: Clean apt-file cache
 
-apt autoremove -y --purge apt-file
+sudo apt autoremove -y --purge apt-file
 
 echo
 echo '--> Install the found libraries'
@@ -35,5 +35,5 @@ cat /tmp/to_install_libs.lst | cut -d: -f 1 | xargs apt install -y --no-install-
 
 # Complete the cleaning
 
-apt -qq clean
+sudo apt -qq clean
 rm -rf /var/lib/apt/lists/*

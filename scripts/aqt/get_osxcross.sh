@@ -10,19 +10,19 @@ root_dir=$PWD
 [ "$root_dir" != '/' ] || root_dir=""
 
 # Init the package system
-apt update
+sudo apt update
 
 echo
 echo '--> Save the original installed packages list'
 echo
 
-dpkg --get-selections | cut -f 1 > /tmp/packages_orig.lst
+sudo dpkg --get-selections | cut -f 1 > /tmp/packages_orig.lst
 
 echo
 echo '--> Install the required packages to install osxcross'
 echo
 
-apt install -y curl ca-certificates clang llvm-dev libxml2-dev uuid-dev libssl-dev cpio libbz2-dev make patch git zlib1g-dev
+sudo apt install -y curl ca-certificates clang llvm-dev libxml2-dev uuid-dev libssl-dev cpio libbz2-dev make patch git zlib1g-dev
 
 echo
 echo '--> Download & install the osxcross and sdk'
@@ -56,21 +56,21 @@ export CMAKE_TOOLCHAIN_FILE=\$QT_MACOS/lib/cmake/Qt6/qt.toolchain.cmake
 exec cmake -DQT_CHAINLOAD_TOOLCHAIN_FILE=\$OSXCROSS_TOOLCHAIN_FILE "\$@"
 EOF
 
-chmod +x /usr/local/bin/*
+sudo chmod +x /usr/local/bin/*
 
 # Required tools for macdeployqt, they will work for both architectures
-ln -s $OUT_DIR/bin/x86_64-apple-*-otool /usr/local/bin/otool
-ln -s $OUT_DIR/bin/x86_64-apple-*-install_name_tool /usr/local/bin/install_name_tool
-ln -s $OUT_DIR/bin/x86_64-apple-*-strip /usr/local/bin/strip
+sudo ln -s $OUT_DIR/bin/x86_64-apple-*-otool /usr/local/bin/otool
+sudo ln -s $OUT_DIR/bin/x86_64-apple-*-install_name_tool /usr/local/bin/install_name_tool
+sudo ln -s $OUT_DIR/bin/x86_64-apple-*-strip /usr/local/bin/strip
 
 echo
 echo '--> Restore the packages list to the original state'
 echo
 
-dpkg --get-selections | cut -f 1 > /tmp/packages_curr.lst
+sudo dpkg --get-selections | cut -f 1 > /tmp/packages_curr.lst
 grep -Fxv -f /tmp/packages_orig.lst /tmp/packages_curr.lst | xargs apt remove -y --purge
 
 # Complete the cleaning
 
-apt -qq clean
-rm -rf /var/lib/apt/lists/* /tmp/osxcross*
+sudo apt -qq clean
+sudo rm -rf /var/lib/apt/lists/* /tmp/osxcross*
