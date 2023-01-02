@@ -5,13 +5,13 @@ on:
     inputs:
       debug_enabled:
         type: boolean
-        description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'     
+        description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
         required: false
         default: false
       tags:
         description: 'Test scenario tags'
-        required: true 
-        type: string  
+        required: true
+        type: string
   push:
     branches:
        - main
@@ -35,47 +35,40 @@ jobs:
     - uses: actions/checkout@v3
     - name: Prepare MacPorts
       run: |
-           mkdir ~/src
-           cd ~/src
-           curl -qO https://distfiles.macports.org/MacPorts/MacPorts-2.8.0.tar.bz2
-           tar xf MacPorts-2.8.0.tar.bz2
-           cd MacPorts-2.8.0/
-           ./configure --with-universal-archs="x86_64 arm64"
-           make
-           sudo make install
-           sudo bash -c "echo \"+universal\" >> /opt/local/etc/macports/variants.conf"
-           sudo /opt/local/bin/port selfupdate
-           
-    - name: Install dependencies
-      run: |
-           sudo /opt/local/bin/port -s install -N nodejs16 +universal
+           brew install --only-dependencies qt@6
+           brew install ccache
 
-    - name: Install Qt6
+    - name: Configure QT6
       run: |
-           sudo /opt/local/bin/port -s install -N qt6 +universal
-           
-           
+           ./configure -- -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
+
+    - name: Build QT6
+      run: |
+           cmake --build . --parallel
+
+    - name: Install QT6
+      run: |
+           sudo cmake --install .
+
     - name: Prepare packages
       run: |
-          sudo /opt/local/bin/port -s pkg -N qt6 +universal
-          sudo /opt/local/bin/port -s pkg -N nodejs16 +universal
           mkdir ~/artifacts/pkg
           for i in $(find /opt/local -name *.pkg)
           do
           cp $i ~/artifacts/pkg
           done
-           
+
     - name: QT6 universal
       uses: actions/upload-artifact@v3.0.0
       with:
         name: qt6-universal-macports
         path: ~/artifacts/
-        
+
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
       if: ${{ failure() }}
       with:
           limit-access-to-actor: true
           #install-dependencies: false
-#      timeout-minutes: 60          
-        
+#      timeout-minutes: 60
+
