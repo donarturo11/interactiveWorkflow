@@ -46,7 +46,7 @@ jobs:
     - name: Configure QT6
       run: |
            cd qt*
-           ./configure -- -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
+           ./configure -release -static -appstore-compliant -no-pch -no-dbus -no-icu -qt-pcre -system-zlib -ssl -openssl-linked -no-cups -qt-libpng -qt-libjpeg -no-feature-testlib -no-feature-concurrent -- -D CMAKE_OSX_ARCHITECTURES="x86_64;arm64" -D QT_BUILD_EXAMPLES=OFF
 
     - name: Build QT6
       run: |
