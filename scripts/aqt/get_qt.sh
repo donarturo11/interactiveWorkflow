@@ -10,6 +10,9 @@ root_dir=$PWD
 [ "$root_dir" != '/' ] || root_dir=""
 
 # Init the package system
+echo
+echo '--> Init update system'
+echo
 sudo apt update
 
 echo
