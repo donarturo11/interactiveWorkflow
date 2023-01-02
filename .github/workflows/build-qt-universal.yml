@@ -33,10 +33,45 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Prepare Dependencies
+    - name: Prepare Install MacPorts
       run: |
-           brew install --only-dependencies qt@6
-           brew install ccache
+           mkdir ~/src
+           cd ~/src
+           curl -O https://distfiles.macports.org/MacPorts/MacPorts-2.8.0.tar.bz2
+           tar xf MacPorts-2.8.0.tar.bz2
+           cd MacPorts-2.8.0/
+           ./configure
+           make
+           sudo make install
+           /opt/local/bin/port selfupdate
+
+    - name: Install dependencies
+      run: |
+           /opt/local/bin/port install \
+                      assimp \
+                      brotli \
+                      cmake \
+                      dbus \
+                      double-conversion \
+                      freetype \
+                      glib2 \
+                      harfbuzz \
+                      hunspell \
+                      icu \
+                      jasper \
+                      libb2 \
+                      libiconv \
+                      libjpeg-turbo \
+                      libpng \
+                      md4c \
+                      nodejs16 \
+                      openssl3 \
+                      pcre2 \
+                      tiff \
+                      webp \
+                      zlib \
+                      zstd \
+                      +universal
 
     - name: Fetch QT6
       run: |
