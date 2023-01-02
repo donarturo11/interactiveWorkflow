@@ -34,38 +34,14 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Prepare env
+    - name: Build docker image
       run: |
-           cp scripts/aqt/set_env.sh ~/.aqt_set_env
-           echo "source \${HOME}/.aqt_set_env" >> ~/.bashrc
-           source ~/.bashrc
-
-    - name: Install dependencies
-      run: sudo apt-get install -y openssh-client ca-certificates curl python3 locales clang genisoimage
-
-    - name: Get Qt
-      run: |
-           source ~/.bashrc
-           echo "get QT"
-           ./scripts/aqt/get_qt.sh
-
-    - name: Get osxcross
-      run: |
-           source ~/.bashrc
-           echo "get osxcross"
-           ./scripts/aqt/get_osxcross.sh
-
-    - name: Install packages
-      run: |
-           source ~/.bashrc
-           echo "install packages"
-           ./scripts/aqt/install_packages.sh
-
-    - name: Prepare artifacts
-      run: |
-           mkdir ~/artifacts
-           tar -czf ~/artifacts/aqt-linux.tar.gz $QT_PATH
-
+           mkdir ~/docker
+           cd ~/docker
+           git clone https://github.com/state-of-the-art/qt6-docker
+           cd qt6-docker/
+           docker build 6.4-macos-aqt
+           
     - name: Upload artifacts
       uses: actions/upload-artifact@v3.0.0
       with:
