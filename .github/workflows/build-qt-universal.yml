@@ -85,7 +85,10 @@ jobs:
     - name: Configure QT6
       run: |
            cd qt*
-           ./configure -release -static -appstore-compliant -no-pch -no-dbus -no-icu -qt-pcre -system-zlib -ssl -openssl-linked -no-cups -qt-libpng -qt-libjpeg -no-feature-testlib -no-feature-concurrent -- -D CMAKE_OSX_ARCHITECTURES="x86_64;arm64" -D QT_BUILD_EXAMPLES=OFF
+           ./configure -release -static -appstore-compliant -no-pch -no-dbus -no-icu -qt-pcre -system-zlib -ssl -openssl-linked -no-cups -qt-libpng -qt-libjpeg -no-feature-testlib -no-feature-concurrent -- \
+                       -D CMAKE_OSX_ARCHITECTURES="x86_64;arm64" \
+                       -D QT_BUILD_EXAMPLES=OFF \
+                       -D CMAKE_PREFIX_PATH=/opt/local
 
     - name: Build QT6
       run: |
@@ -109,11 +112,11 @@ jobs:
         name: qt6-universal-macports
         path: ~/artifacts/
 
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v3
-      if: ${{ failure() }}
-      with:
-          limit-access-to-actor: true
-          #install-dependencies: false
+#    - name: Setup tmate session
+#      uses: mxschmitt/action-tmate@v3
+#      if: ${{ failure() }}
+#      with:
+#          limit-access-to-actor: true
+#          #install-dependencies: false
 #      timeout-minutes: 60
 
