@@ -66,11 +66,11 @@ jobs:
         name: aqt-linux
         path: ~/artifacts/
 
-#    - name: Setup tmate session
-#      uses: mxschmitt/action-tmate@v3
-#      if: ${{ failure() }}
-#      with:
-#          limit-access-to-actor: true
-#          #install-dependencies: false
-#      timeout-minutes: 60
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+      if: ${{ failure() }}
+      with:
+          limit-access-to-actor: true
+          #install-dependencies: false
+      timeout-minutes: 60
 
