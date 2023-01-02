@@ -47,7 +47,8 @@ jobs:
 
     - name: Install dependencies
       run: |
-           sudo /opt/local/bin/port install \
+           ARGS=""
+           for i in \
                       assimp \
                       brotli \
                       cmake \
@@ -70,8 +71,11 @@ jobs:
                       tiff \
                       webp \
                       zlib \
-                      zstd \
-                      +universal
+                      zstd
+           do
+           ARGS="${ARGS} install ${i} +universal"
+           sudo /opt/local/bin/port ${ARGS}
+           done
 
     - name: Fetch QT6
       run: |
