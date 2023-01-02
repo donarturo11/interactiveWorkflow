@@ -1,4 +1,4 @@
-#!/bin/sh -xe
+#!/usr/bin/env bash
 # Script to install osxcross with SDK
 
 [ "$OSXCROSS_URL" ] || OSXCROSS_URL="https://github.com/tpoechtrager/osxcross/archive/be2b79f444aa0b43b8695a4fb7b920bf49ecc01c.tar.gz"

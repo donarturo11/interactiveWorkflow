@@ -1,4 +1,4 @@
-#!/bin/sh -xe
+#!/usr/bin/env bash
 export QT_VERSION=6.4.0
 export QT_PATH=/opt/Qt
 export QT_MACOS=${QT_PATH}/${QT_VERSION}/macos
