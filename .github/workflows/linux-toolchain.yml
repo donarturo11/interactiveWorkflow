@@ -38,22 +38,25 @@ jobs:
       run: |
            cp scripts/aqt/set_env.sh ~/.aqt_set_env
            echo "source \${HOME}/.aqt_set_env" >> ~/.bashrc
-           source ~/.aqt_set_env
+           source ~/.bashrc
 
     - name: Install dependencies
       run: sudo apt-get install -y openssh-client ca-certificates curl python3 locales clang genisoimage
 
     - name: Get Qt
       run: |
-           bash scripts/aqt/get_qt.sh
+           source ~/.bashrc
+           ./scripts/aqt/get_qt.sh
 
     - name: Get osxcross
       run: |
-           bash scripts/aqt/get_osxcross.sh
+           source ~/.bashrc
+           ./scripts/aqt/get_osxcross.sh
 
     - name: Install packages
       run: |
-           bash scripts/aqt/install_packages.sh
+           source ~/.bashrc
+           ./scripts/aqt/install_packages.sh
 
     - name: Prepare artifacts
       run: |
