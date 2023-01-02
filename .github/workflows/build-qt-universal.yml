@@ -75,7 +75,7 @@ jobs:
                       zstd
            do
            ARGS="${ARGS} ${i} "
-           sudo /opt/local/bin/port ${ARGS}
+           sudo /opt/local/bin/port install ${ARGS}
            done
 
     - name: Prepare backup MacPorts
