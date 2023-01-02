@@ -1,0 +1,75 @@
+name: Build MacOS Monterey
+
+on:
+  workflow_dispatch:
+    inputs:
+      debug_enabled:
+        type: boolean
+        description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
+        required: false
+        default: false
+      tags:
+        description: 'Test scenario tags'
+        required: true
+        type: string
+  push:
+    branches:
+       - main
+       - linux-toolchain
+  pull_request:
+    branches: [ main ]
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+  QT_VERSION=6.4.0
+  QT_PATH=/opt/Qt
+  QT_MACOS=${QT_PATH}/${QT_VERSION}/macos
+  AQT_VERSION="aqtinstall==3.0.1"
+  PATH=$PATH:${QT_PATH}/Tools/CMake/bin:${QT_PATH}/Tools/Ninja:${QT_PATH}/${QT_VERSION}/macos/bin:/opt/osxcross/bin
+
+
+jobs:
+  build-linux:
+    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
+    # You can convert this to a matrix build if you need cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: apt-get install -y sudo git openssh-client ca-certificates curl python3 locales clang genisoimage
+
+    - name: Get Qt
+      run: |
+           bash scripts/aqt/get_qt.sh
+
+    - name: Get osxcross
+      run: |
+           bash scripts/aqt/get_osxcross.sh
+
+    - name: Install packages
+      run: |
+           bash scripts/aqt/install_packages.sh
+
+    - name: Prepare artifacts
+      run: |
+           mkdir ~/artifacts
+           tar -czf ~/artifacts/aqt-linux.tar.gz $QT_PATH
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3.0.0
+      with:
+        name: aqt-linux
+        path: ~/artifacts/
+
+#    - name: Setup tmate session
+#      uses: mxschmitt/action-tmate@v3
+#      if: ${{ failure() }}
+#      with:
+#          limit-access-to-actor: true
+#          #install-dependencies: false
+#      timeout-minutes: 60
+
