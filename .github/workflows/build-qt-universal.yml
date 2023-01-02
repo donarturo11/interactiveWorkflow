@@ -82,7 +82,7 @@ jobs:
       run: |
           mkdir ~/MacPorts-mod/
           sudo tar -czf ~/MacPorts-mod/MacPorts-mod.tar.gz /opt/local
-          sudo chown $(whoami) ~/artifacts/MacPorts-mod.tar.gz
+          sudo chown $(whoami) ~/MacPorts-mod/MacPorts-mod.tar.gz
 
     - name: Upload MacPorts
       uses: actions/upload-artifact@v3.0.0
@@ -126,11 +126,11 @@ jobs:
         name: qt6-universal-macports
         path: ~/artifacts/
 
-#    - name: Setup tmate session
-#      uses: mxschmitt/action-tmate@v3
-#      if: ${{ failure() }}
-#      with:
-#          limit-access-to-actor: true
-#          #install-dependencies: false
-#      timeout-minutes: 60
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+      if: ${{ failure() }}
+      with:
+          limit-access-to-actor: true
+          #install-dependencies: false
+      timeout-minutes: 60
 
