@@ -22,6 +22,18 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Setup Base MINGW env
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: MINGW64
+        update: true
+
+    - name: Setup MinGW Build environment
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: MINGW64
+        install: base base-devel tree autoconf automake-wrapper dos2unix zip git mingw-w64-x86_64-toolchain mingw-w64-x86_64-cmake
+
     - name: Prepare environment
       run: |
            ls -lah
