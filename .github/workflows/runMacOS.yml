@@ -54,10 +54,11 @@ jobs:
     - name: Install MacPorts Packages
       if: ${{ inputs.install_macports }}
       run: |
-           if [ ! -z ${{ inputs.macports_packages }} ]
+           PACKAGES=${{ inputs.macports_packages }}
+           if [ ! -z PACKAGES ]
              OPTS="install"
              then
-             for pkg in ${{ inputs.macports_packages }}
+             for pkg in ${PACKAGES}
                do
                OPTS="$OPTS $pkg"
                done
