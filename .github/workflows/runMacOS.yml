@@ -46,21 +46,9 @@ jobs:
     - name: Install MacPorts
       if: ${{ inputs.install_macports }}
       run: |
-           mkdir ~/mports
-           cd ~/mports
-           git clone -q https://github.com/macports/macports-base.git > /dev/null
-           cd ~/mports/macports-base
-           git checkout v2.8.0 > /dev/null
-           echo ":: Configure MacPorts ::"
-           ./configure > /dev/null
-           echo ":: Build MacPorts ::"
-           make > /dev/null
-           echo ":: Install MacPorts ::"
-           sudo make install > /dev/null
-           echo ":: Cleaning MacPorts ::"
-           make distclean > /dev/null
-           echo ":: Update MacPorts ::"
-           sudo /opt/local/bin/port selfupdate > /dev/null
+           cd ~/Downloads
+           wget -q https://github.com/macports/macports-base/releases/download/v2.8.0/MacPorts-2.8.0-12-Monterey.pkg
+           sudo installer -verbose -pkg MacPorts-2.8.0-12-Monterey.pkg -target /
            echo ":: Set variables ::"
            echo "/opt/local/bin" >> $GITHUB_PATH
            echo "/opt/local/sbin" >> $GITHUB_PATH
