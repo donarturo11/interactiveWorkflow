@@ -48,7 +48,7 @@ jobs:
       run: |
            cd ~/Downloads
            wget -q https://github.com/macports/macports-base/releases/download/v2.8.0/MacPorts-2.8.0-12-Monterey.pkg
-           sudo installer -verbose -pkg MacPorts-2.8.0-12-Monterey.pkg -target /
+           sudo installer -pkg MacPorts-2.8.0-12-Monterey.pkg -target /
            echo ":: Set variables ::"
            echo "/opt/local/bin" >> $GITHUB_PATH
            echo "/opt/local/sbin" >> $GITHUB_PATH
