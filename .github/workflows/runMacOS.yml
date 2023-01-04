@@ -119,7 +119,7 @@ jobs:
       if: ${{ inputs.install_macports_mode == 'build' }}
       uses: actions/upload-artifact@v3.0.0
       with:
-        name: interactiveWorkflowFiles
+        name: macports-bin
         path: ~/macports-bin/
 
     - name: Upload files
