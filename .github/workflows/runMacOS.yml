@@ -53,17 +53,17 @@ jobs:
     - name: Install MacPorts Packages
       if: {{ inputs.install_macports }}
       run: |
-          if [ ! -z ${{ macports_packages }} ]
-            OPTS="install"
-            then
-            for pkg in ${{ macports_packages }}
-              do
-              OPTS="$OPTS $pkg"
-              done
-            port $OPTS
-          else
-            echo ":: No packages to install ::"
-          fi
+           if [ ! -z ${{ macports_packages }} ]
+             OPTS="install"
+             then
+             for pkg in ${{ macports_packages }}
+               do
+               OPTS="$OPTS $pkg"
+               done
+             port $OPTS
+           else
+             echo ":: No packages to install ::"
+           fi
 
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
