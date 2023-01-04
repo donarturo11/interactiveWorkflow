@@ -30,7 +30,7 @@ jobs:
     runs-on: macos-12
     defaults:
       run:
-        shell: bash -e ${{ env.HOME }}/.bashrc {0}
+        shell: bash -e ~/.bashrc {0}
     steps:
     - uses: actions/checkout@v3
 
