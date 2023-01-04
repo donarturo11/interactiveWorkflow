@@ -39,7 +39,8 @@ jobs:
       if: ${{ inputs.install_macports }}
       run: |
            mkdir ~/mports
-           git clone https://github.com/macports/macports-base.git
+           cd ~/mports
+           git -q clone https://github.com/macports/macports-base.git
            cd ~/mports/macports-base
            git checkout v2.8.0
            ./configure --enable-readline
