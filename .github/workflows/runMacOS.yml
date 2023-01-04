@@ -2,6 +2,20 @@ name: Run MacOS
 
 on:
   workflow_dispatch:
+  inputs:
+    install_macports:
+      description: 'Install MacPorts'
+      required: false
+      type: boolean
+    macports_dev:
+      description: 'Development version'
+      required: false
+      type: boolean
+    macports_packages:
+        description: 'Install MacPorts Packages'
+        required: false
+        type: string
+
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -20,6 +34,35 @@ jobs:
 
     - name: Prepare environment
       run: mkdir ~/artifacts || echo "~/artifacts already created"
+
+    - name: Install MacPorts
+      if: {{ inputs.install_macports }}
+      run: |
+           mkdir ~/mports
+           git clone https://github.com/macports/macports-base.git
+           cd ~/mports/macports-base
+           git checkout v2.8.0
+           ./configure --enable-readline
+           make
+           sudo make install
+           make distclean
+           export PATH=/opt/local/bin:/opt/local/sbin:$PATH
+           echo "PATH=${PATH}:/opt/local/bin" >> $GITHUB_ENV
+           sudo port selfupdate
+
+    - name: Install MacPorts Packages
+      if: {{ inputs.install_macports }}
+          if [ ! -z ${{ macports_packages }} ]
+          OPTS="install"
+          then
+            for pkg in ${{ macports_packages }}
+            do
+            OPTS="$OPTS $pkg"
+            done
+            port $OPTS
+          else
+            echo ":: No packages to install ::"
+          fi
 
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
