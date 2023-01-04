@@ -2,16 +2,16 @@ name: Run MacOS
 
 on:
   workflow_dispatch:
-  inputs:
-    install_macports:
-      description: 'Install MacPorts'
-      required: false
-      type: boolean
-    macports_dev:
-      description: 'Development version'
-      required: false
-      type: boolean
-    macports_packages:
+    inputs:
+      install_macports:
+        description: 'Install MacPorts'
+        required: false
+        type: boolean
+      macports_dev:
+        description: 'Development version'
+        required: false
+        type: boolean
+      macports_packages:
         description: 'Install MacPorts Packages'
         required: false
         type: string
