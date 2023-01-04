@@ -10,6 +10,14 @@ on:
         options:
         - tmate
         - upterm
+        - none
+      install_macports_mode
+        type: choice
+        description: Build or fetch binary Macports
+        default: 'fetch'
+        options:
+        - build
+        - fetch
       install_macports:
         description: 'Install MacPorts'
         required: false
@@ -43,12 +51,28 @@ jobs:
            mkdir ~/artifacts || echo "~/artifacts already created"
            echo ":: Terminal session : ${{ inputs.terminal_session }} ::"
 
+    - name: Fetch MacPorts
+      if: ${{ inputs.install_macports_mode == 'fetch' }}
+      run: echo ":: Not yet implemented ::"
+
+    - name: Build MacPorts
+      if: ${{ inputs.install_macports_mode == 'build' }}
+      run: |
+           mkdir -p ~/mports
+           cd ~/mports
+           git clone https://github.com/macports/macports-base.git
+           cd macports-base
+           git checkout v2.8.0  # skip this if you want to use the development version
+           cd ~/mports/macports-base
+           ./configure --enable-readline
+           make
+           sudo make install
+           make distclean
+
     - name: Install MacPorts
       if: ${{ inputs.install_macports }}
       run: |
-           cd ~/Downloads
-           wget -q https://github.com/macports/macports-base/releases/download/v2.8.0/MacPorts-2.8.0-12-Monterey.pkg
-           sudo installer -pkg MacPorts-2.8.0-12-Monterey.pkg -target /
+           sudo /opt/local/ports selfupdate
            echo ":: Set variables ::"
            echo "/opt/local/bin" >> $GITHUB_PATH
            echo "/opt/local/sbin" >> $GITHUB_PATH
@@ -83,6 +107,19 @@ jobs:
       with:
         ## limits ssh access and adds the ssh public key for the user which triggered the workflow
         limit-access-to-actor: true
+
+    - name: Prepare to upload MacPorts
+      if: ${{ inputs.install_macports_mode == 'build' }}
+      run: |
+           mkdir ~/macports-bin
+           [[ -x /opt/usr ]] && tar -czf ~/macports-bin/macports-bin.tar.gz /opt/usr/
+
+    - name: Upload MacPorts
+      if: ${{ inputs.install_macports_mode == 'build' }}
+      uses: actions/upload-artifact@v3.0.0
+      with:
+        name: interactiveWorkflowFiles
+        path: ~/macports-bin/
 
     - name: Upload files
       uses: actions/upload-artifact@v3.0.0
