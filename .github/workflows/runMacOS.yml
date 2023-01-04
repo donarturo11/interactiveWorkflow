@@ -47,8 +47,7 @@ jobs:
            make
            sudo make install
            make distclean
-           export PATH=/opt/local/bin:/opt/local/sbin:$PATH
-           echo "PATH=${PATH}:/opt/local/bin" >> $GITHUB_ENV
+           echo "export PATH=/opt/local/bin:/opt/local/sbin:\${PATH}" >> ~/.bashrc
            sudo port selfupdate
 
     - name: Install MacPorts Packages
