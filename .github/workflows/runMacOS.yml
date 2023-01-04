@@ -81,7 +81,7 @@ jobs:
 
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
-      if: ${{ inputs.terminal_session }} == 'tmate'
+      if: ${{ inputs.terminal_session.tmate }}
       with:
           limit-access-to-actor: true
           #install-dependencies: false
@@ -89,7 +89,7 @@ jobs:
 
     - name: Setup upterm session
       uses: lhotari/action-upterm@v1
-      if: ${{ inputs.terminal_session }} == 'upterm'
+      if: ${{ inputs.terminal_session.upterm }}
       with:
         ## limits ssh access and adds the ssh public key for the user which triggered the workflow
         limit-access-to-actor: true
