@@ -40,7 +40,7 @@ jobs:
       run: |
            mkdir ~/mports
            cd ~/mports
-           git -q clone https://github.com/macports/macports-base.git
+           git clone -q https://github.com/macports/macports-base.git
            cd ~/mports/macports-base
            git checkout v2.8.0
            ./configure --enable-readline
