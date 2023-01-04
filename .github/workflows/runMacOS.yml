@@ -39,20 +39,26 @@ jobs:
       run: |
            mkdir ~/mports
            cd ~/mports
-           git clone -q https://github.com/macports/macports-base.git
+           git clone -q https://github.com/macports/macports-base.git > /dev/null
            cd ~/mports/macports-base
-           git checkout v2.8.0
-           ./configure --enable-readline
-           make
-           sudo make install
-           make distclean
+           git checkout v2.8.0 > /dev/null
+           echo ":: Configure MacPorts ::"
+           ./configure > /dev/null
+           echo ":: Build MacPorts ::"
+           make > /dev/null
+           echo ":: Install MacPorts ::"
+           sudo make install > /dev/null
+           echo ":: Cleaning MacPorts ::"
+           make distclean > /dev/null
+           echo ":: Update MacPorts ::"
+           sudo /opt/local/bin/port selfupdate > /dev/null
+           echo ":: Set variables ::"
            echo "/opt/local/bin" >> $GITHUB_PATH
            echo "/opt/local/sbin" >> $GITHUB_PATH
 
     - name: Install MacPorts Packages
       if: ${{ inputs.install_macports }}
       run: |
-           sudo port selfupdate
            PACKAGES=${{ inputs.macports_packages }}
            if [ ! -z PACKAGES ]
              OPTS="install"
