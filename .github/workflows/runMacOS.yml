@@ -3,6 +3,13 @@ name: Run MacOS
 on:
   workflow_dispatch:
     inputs:
+      terminal_session:
+        type: choice
+        description: Choose terminal session
+        default: 'upterm'
+        options:
+        - tmate
+        - upterm
       install_macports:
         description: 'Install MacPorts'
         required: false
@@ -74,10 +81,18 @@ jobs:
 
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
+      if: ${{ inputs.terminal_session }} == 'tmate'
       with:
           limit-access-to-actor: true
           #install-dependencies: false
       timeout-minutes: 60
+
+    - name: Setup upterm session
+      uses: lhotari/action-upterm@v1
+      if: ${{ inputs.terminal_session }} == 'upterm'
+      with:
+        ## limits ssh access and adds the ssh public key for the user which triggered the workflow
+        limit-access-to-actor: true
 
     - name: Upload files
       uses: actions/upload-artifact@v3.0.0
