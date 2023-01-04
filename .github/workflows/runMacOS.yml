@@ -48,11 +48,11 @@ jobs:
            make distclean
            echo "/opt/local/bin" >> $GITHUB_PATH
            echo "/opt/local/sbin" >> $GITHUB_PATH
-           sudo port selfupdate
 
     - name: Install MacPorts Packages
       if: ${{ inputs.install_macports }}
       run: |
+           sudo port selfupdate
            PACKAGES=${{ inputs.macports_packages }}
            if [ ! -z PACKAGES ]
              OPTS="install"
