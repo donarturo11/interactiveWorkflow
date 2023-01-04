@@ -11,7 +11,7 @@ on:
         - tmate
         - upterm
         - none
-      install_macports_mode
+      install_macports_mode:
         type: choice
         description: Build or fetch binary Macports
         default: 'fetch'
