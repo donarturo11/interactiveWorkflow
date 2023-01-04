@@ -39,7 +39,9 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Prepare environment
-      run: mkdir ~/artifacts || echo "~/artifacts already created"
+      run: |
+           mkdir ~/artifacts || echo "~/artifacts already created"
+           echo ":: Terminal session : ${{ inputs.terminal_session }} ::"
 
     - name: Install MacPorts
       if: ${{ inputs.install_macports }}
@@ -81,7 +83,7 @@ jobs:
 
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
-      if: ${{ inputs.terminal_session == tmate }}
+      if: ${{ inputs.terminal_session == 'tmate' }}
       with:
           limit-access-to-actor: true
           #install-dependencies: false
@@ -89,7 +91,7 @@ jobs:
 
     - name: Setup upterm session
       uses: lhotari/action-upterm@v1
-      if: ${{ inputs.terminal_session == upterm }}
+      if: ${{ inputs.terminal_session == 'upterm' }}
       with:
         ## limits ssh access and adds the ssh public key for the user which triggered the workflow
         limit-access-to-actor: true
