@@ -36,7 +36,7 @@ jobs:
       run: mkdir ~/artifacts || echo "~/artifacts already created"
 
     - name: Install MacPorts
-      if: {{ inputs.install_macports }}
+      if: ${{ inputs.install_macports }}
       run: |
            mkdir ~/mports
            git clone https://github.com/macports/macports-base.git
@@ -51,7 +51,7 @@ jobs:
            sudo port selfupdate
 
     - name: Install MacPorts Packages
-      if: {{ inputs.install_macports }}
+      if: ${{ inputs.install_macports }}
       run: |
            if [ ! -z ${{ macports_packages }} ]
              OPTS="install"
