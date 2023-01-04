@@ -30,7 +30,7 @@ jobs:
     runs-on: macos-12
     defaults:
       run:
-        shell: bash --rcfile ${HOME}/.bashrc
+        shell: bash --rcfile ${HOME}/.bashrc {0}
     steps:
     - uses: actions/checkout@v3
 
