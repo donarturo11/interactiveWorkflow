@@ -126,7 +126,8 @@ jobs:
            echo "/opt/local/sbin" >> $GITHUB_PATH
            if [[ ${{ inputs.universal }} == true ]]; then
                echo "::notice:: Adding Universal"
-               sudo bash -c "echo +universal >> /opt/local/etc/macports/variants.conf" && echo "::notice:: universal added" || echo "::warning:: adding universal FAILED"
+               sudo bash -c "echo +universal >> /opt/local/etc/macports/variants.conf"
+               echo "::notice:: universal added"
            fi
 
     - name: Backup MacPorts
