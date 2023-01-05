@@ -62,17 +62,19 @@ jobs:
              echo "::warning::+universal not choosen"
            fi
 
-           if [ ! -z ${{ inputs.macports_packages }} ]
+           if [ ! -z "${{ inputs.macports_packages }}" ]
            then
              echo "::notice::Packages to install ${{ inputs.macports_packages }}"
            else
              echo "::warning::Nothing to install"
            fi
+
            declare -i count
            for i in ${{ inputs.macports_packages }}
            do
              count=+1
            done
+
            if [ $count == 0 ]
            then
              echo "::warning::Nothing to install"
