@@ -119,11 +119,7 @@ jobs:
       if: ${{ inputs.install_macports }}
       run: |
            echo "::notice:: Port self update"
-           start=$(date +%s)
            sudo /opt/local/bin/port selfupdate
-           end=$(date +%s)
-           runtime=$((end-start))
-           humanTime=$(date -d@${runtime} -u +%H:%M:%S)
            echo "::notice::\nPort updated in ${humanTime}"" || echo "::warning:: :rocket: Houston we have problem"
            echo "::notice:: Set variables"
            echo "/opt/local/bin" >> $GITHUB_PATH
@@ -145,12 +141,7 @@ jobs:
            echo "::notice:: PATH=${PATH}"
            if [ ! -z "${{ inputs.macports_packages }}" ]; then
              echo "::notice:: installing ${{ inputs.macports_packages }}"
-             start=$(date +%s)
              sudo /opt/local/bin/port -N ${{ inputs.macports_packages }} || echo "::warning::Installing failed"
-             end=$(date +%s)
-             runtime=$((end-start))
-             humanTime=$(date -d@${runtime} -u +%H:%M:%S)
-             echo "::notice::Installation time: $humanTime"
            else
              echo "::warning:: No packages to install"
            fi
