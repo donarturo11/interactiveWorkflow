@@ -114,7 +114,8 @@ jobs:
            echo "::notice:: PATH=${PATH}"
            [[ -z ${PACKAGES} ]] && echo "::notice::No packages to install"
            if [ ! -z ${{ inputs.macports_packages }} ]; then
-             /opt/local/bin/port ${{ inputs.macports_packages }}
+             echo "::notice:: installing ${{ inputs.macports_packages }}"
+             sudo /opt/local/bin/port -N ${{ inputs.macports_packages }} || echo "::warning::Installing failed"
            else
              echo "::warning:: No packages to install"
            fi
@@ -126,7 +127,7 @@ jobs:
            cd /opt/local/var/macports/software/
            for i in $(find . -name *.tbz2)
            do
-             cp -v $i ~/artifacts/pkgs/
+             cp -v $i ~/artifacts/pkgs/ || echo "::warning::copying $i FAILED"
            done
 
     - name: Setup tmate session
