@@ -87,9 +87,9 @@ jobs:
       run: |
            echo "::notice:: PATH=${PATH}"
            PACKAGES=${{ inputs.macports_packages }}
-           if [ ! -z PACKAGES ]
+           [[ -z ${PACKAGES} ]] && echo "::notice::No packages to install"
+           if [ ! -z ${PACKAGES} ]; then
              OPTS="install"
-             then
              for pkg in ${PACKAGES}
                do
                OPTS="$OPTS $pkg"
