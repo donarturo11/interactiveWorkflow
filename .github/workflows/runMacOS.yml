@@ -93,7 +93,14 @@ jobs:
     - name: Install MacPorts
       if: ${{ inputs.install_macports }}
       run: |
+           echo "::notice:: Port self update"
+           start=$(date +%s)
            sudo /opt/local/bin/port selfupdate
+           end=$(date +%s)
+           runtime=$((end-start))
+           runtimeSec=$((runtime%60))
+           runtimeMin=$((runtimeSec/60))
+           echo "::notice::\nPort updated in %runtime secs $runtimeMin\'$runtimeSec\"" || echo "::warning:: :rocket: Houston we have problem"
            echo "::notice:: Set variables"
            echo "/opt/local/bin" >> $GITHUB_PATH
            echo "/opt/local/sbin" >> $GITHUB_PATH
