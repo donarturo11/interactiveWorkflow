@@ -77,7 +77,7 @@ jobs:
     - name: Install MacPorts
       if: ${{ inputs.install_macports }}
       run: |
-           sudo /opt/local/port selfupdate
+           sudo /opt/local/bin/port selfupdate
            echo ":: Set variables ::"
            echo "/opt/local/bin" >> $GITHUB_PATH
            echo "/opt/local/sbin" >> $GITHUB_PATH
