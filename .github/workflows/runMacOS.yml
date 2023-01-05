@@ -56,9 +56,9 @@ jobs:
       run: |
            echo ":: Fetchinng MacPorts ::"
            cd ~/Downloads
-           wget https://freeshell.de/arturwro/downloads/macports-bin.tar.gz
-           sudo tar -vxzf macports-bin.tar.gz -C /
-           sudo find /opt/
+           wget -q https://freeshell.de/arturwro/downloads/macports-bin.tar.gz
+           sudo tar -xzf macports-bin.tar.gz -C /
+
 
     - name: Build MacPorts
       if: ${{ inputs.install_macports_mode == 'build' }}
@@ -77,7 +77,7 @@ jobs:
     - name: Install MacPorts
       if: ${{ inputs.install_macports }}
       run: |
-           sudo /opt/local/ports selfupdate
+           sudo /opt/local/port selfupdate
            echo ":: Set variables ::"
            echo "/opt/local/bin" >> $GITHUB_PATH
            echo "/opt/local/sbin" >> $GITHUB_PATH
