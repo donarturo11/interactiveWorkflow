@@ -6,7 +6,7 @@ on:
       terminal_session:
         type: choice
         description: Choose terminal session
-        default: 'upterm'
+        default: 'none'
         options:
         - tmate
         - upterm
@@ -92,9 +92,16 @@ jobs:
            echo "::notice:: Set variables"
            echo "/opt/local/bin" >> $GITHUB_PATH
            echo "/opt/local/sbin" >> $GITHUB_PATH
-           if [[ ${{ inputs.universal }} ]]; then
-               echo "::warning:: added +universal"
+           if [[ ${{ inputs.universal }} == true ]]; then
+               echo "::notice:: Adding Universal"
+               sudo bash -c "echo +universal >> /opt/local/etc/macports/variants.conf"
            fi
+
+    - name: Backup MacPorts
+      if: ${{ inputs.install_macports_mode == 'build' }}
+      run: |
+           mkdir ~/macports-bin
+           [[ -x /opt/local ]] && tar -czf ~/macports-bin/macports-bin.tar.gz /opt/local/
 
     - name: Install MacPorts Packages
       if: ${{ inputs.install_macports }}
@@ -113,6 +120,16 @@ jobs:
              echo "::warning:: No packages to install"
            fi
 
+    - name: Prepare to upload packages
+      if: ${{ inputs.install_macports }}
+      run: |
+           [[ ! -x ~/artifacts/pkgs ]] && mkdir -p ~/artifacts/pkgs
+           cd /opt/local/var/macports/software/
+           for i in $(find . -name *.tbz2)
+           do
+             cp -v $i ~/artifacts/pkgs/
+           done
+
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
       if: ${{ inputs.terminal_session == 'tmate' }}
@@ -127,12 +144,6 @@ jobs:
       with:
         ## limits ssh access and adds the ssh public key for the user which triggered the workflow
         limit-access-to-actor: true
-
-    - name: Prepare to upload MacPorts
-      if: ${{ inputs.install_macports_mode == 'build' }}
-      run: |
-           mkdir ~/macports-bin
-           [[ -x /opt/local ]] && tar -czf ~/macports-bin/macports-bin.tar.gz /opt/local/
 
     - name: Upload MacPorts
       if: ${{ inputs.install_macports_mode == 'build' }}
