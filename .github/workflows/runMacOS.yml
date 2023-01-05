@@ -53,7 +53,7 @@ jobs:
       run: |
            echo "::notice:: Terminal session : ${{ inputs.terminal_session }}"
            echo "::notice:: Install macports mode : ${{ inputs.install_macports_mode }}"
-           echo "::notice:: Choosen packages : ${{ inputs.install_macports_packages }}"
+           echo "::notice:: Choosen packages : ${{ inputs.macports_packages }}"
            echo "::notice:: +universal : ${{ inputs.universal }}"
            [[ ${{ inputs.universal }} == true ]] && echo "::notice::+universal choosen" || echo "::warning::+universal not choosen"
 
@@ -107,15 +107,9 @@ jobs:
       if: ${{ inputs.install_macports }}
       run: |
            echo "::notice:: PATH=${PATH}"
-           PACKAGES=${{ inputs.macports_packages }}
            [[ -z ${PACKAGES} ]] && echo "::notice::No packages to install"
-           if [ ! -z ${PACKAGES} ]; then
-             OPTS="install"
-             for pkg in ${PACKAGES}
-               do
-               OPTS="$OPTS $pkg"
-               done
-             /opt/local/bin/port $OPTS
+           if [ ! -z ${{ inputs.macports_packages }} ]; then
+             /opt/local/bin/port ${{ inputs.macports_packages }}
            else
              echo "::warning:: No packages to install"
            fi
