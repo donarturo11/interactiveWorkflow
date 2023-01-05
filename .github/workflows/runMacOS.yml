@@ -54,7 +54,10 @@ jobs:
     - name: Fetch MacPorts
       if: ${{ inputs.install_macports_mode == 'fetch' }}
       run: |
-           echo ":: Not yet implemented ::"
+           echo ":: Fetchinng MacPorts ::"
+           cd ~/Downloads
+           wget -q https://freeshell.de/arturwro/downloads/macports-bin.tar.gz
+           sudo tar -xzf macports-bin.tar.gz -C /
 
     - name: Build MacPorts
       if: ${{ inputs.install_macports_mode == 'build' }}
