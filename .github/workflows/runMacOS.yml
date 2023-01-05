@@ -113,7 +113,7 @@ jobs:
       if: ${{ inputs.install_macports_mode == 'build' }}
       run: |
            mkdir ~/macports-bin
-           [[ -x /opt/local ]] && tar -czf ~/macports-bin/macports-bin.tar.gz /opt/usr/
+           [[ -x /opt/local ]] && tar -czf ~/macports-bin/macports-bin.tar.gz /opt/local/
 
     - name: Upload MacPorts
       if: ${{ inputs.install_macports_mode == 'build' }}
