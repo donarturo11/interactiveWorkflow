@@ -26,6 +26,10 @@ on:
         description: 'Development version'
         required: false
         type: boolean
+      universal:
+        description: '+universal'
+        required: false
+        type: boolean
       macports_packages:
         description: 'Install MacPorts Packages'
         required: false
@@ -81,6 +85,9 @@ jobs:
            echo "::notice:: Set variables"
            echo "/opt/local/bin" >> $GITHUB_PATH
            echo "/opt/local/sbin" >> $GITHUB_PATH
+           if [[ ${{ inputs.install_universal }} == 1 ]]; then
+               echo "::warning:: added +universal"
+           fi
 
     - name: Install MacPorts Packages
       if: ${{ inputs.install_macports }}
