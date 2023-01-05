@@ -80,10 +80,15 @@ jobs:
            cd macports-base
            git checkout v2.8.0  # skip this if you want to use the development version
            cd ~/mports/macports-base
-           ./configure --enable-readline
-           make
-           sudo make install
-           make distclean
+           echo "::group::Build and install"
+           echo "::notice:: Configure"
+           ./configure --enable-readline > /dev/null
+           echo "::notice:: Build"
+           make > /dev/null
+           echo "::notice:: Install"
+           sudo make install > /dev/null
+           make distclean > /dev/null
+           echo "::endgroup::"
 
     - name: Install MacPorts
       if: ${{ inputs.install_macports }}
