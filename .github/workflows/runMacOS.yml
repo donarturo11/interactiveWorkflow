@@ -50,7 +50,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Print settings
-    - name: Prepare environment
       run: |
            echo "::notice:: Terminal session : ${{ inputs.terminal_session }}"
            echo "::notice:: Install macports mode : ${{ inputs.install_macports_mode }}"
@@ -58,6 +57,7 @@ jobs:
            echo "::notice:: +universal : ${{ inputs.universal }}"
            [[ ${{ inputs.universal }} ]] && echo "::notice::+universal choosen" || echo "::warning::+universal not choosen"
 
+    - name: Prepare environment
       run: |
            mkdir ~/artifacts || echo "::notice:: ~/artifacts already created"
            echo "::notice:: Terminal session : ${{ inputs.terminal_session }}"
