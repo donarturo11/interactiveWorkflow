@@ -49,8 +49,15 @@ jobs:
     runs-on: macos-12
     steps:
     - uses: actions/checkout@v3
-
+    - name: Print settings
     - name: Prepare environment
+      run: |
+           echo "::notice:: Terminal session : ${{ inputs.terminal_session }}"
+           echo "::notice:: Install macports mode : ${{ inputs.install_macports_mode }}"
+           echo "::notice:: Choosen packages : ${{ inputs.install_macports_packages }}"
+           echo "::notice:: +universal : ${{ inputs.universal }}"
+           [[ ${{ inputs.universal }} ]] && echo "::notice::+universal choosen" || echo "::warning::+universal not choosen"
+
       run: |
            mkdir ~/artifacts || echo "::notice:: ~/artifacts already created"
            echo "::notice:: Terminal session : ${{ inputs.terminal_session }}"
@@ -85,7 +92,7 @@ jobs:
            echo "::notice:: Set variables"
            echo "/opt/local/bin" >> $GITHUB_PATH
            echo "/opt/local/sbin" >> $GITHUB_PATH
-           if [[ ${{ inputs.install_universal }} == 1 ]]; then
+           if [[ ${{ inputs.universal }} ]]; then
                echo "::warning:: added +universal"
            fi
 
