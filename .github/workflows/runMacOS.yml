@@ -141,7 +141,7 @@ jobs:
            echo "::notice:: PATH=${PATH}"
            if [ ! -z "${{ inputs.macports_packages }}" ]; then
              echo "::notice:: installing ${{ inputs.macports_packages }}"
-             sudo /opt/local/bin/port -N ${{ inputs.macports_packages }} || echo "::warning::Installing failed"
+             sudo /opt/local/bin/port -N install ${{ inputs.macports_packages }} || echo "::warning::Installing failed"
            else
              echo "::warning:: No packages to install"
            fi
