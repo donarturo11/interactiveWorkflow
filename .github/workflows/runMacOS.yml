@@ -48,13 +48,13 @@ jobs:
 
     - name: Prepare environment
       run: |
-           mkdir ~/artifacts || echo "~/artifacts already created"
-           echo ":: Terminal session : ${{ inputs.terminal_session }} ::"
+           mkdir ~/artifacts || echo "::notice:: ~/artifacts already created"
+           echo "::notice:: Terminal session : ${{ inputs.terminal_session }}"
 
     - name: Fetch MacPorts
       if: ${{ inputs.install_macports_mode == 'fetch' }}
       run: |
-           echo ":: Fetchinng MacPorts ::"
+           echo "::notice:: Fetchinng MacPorts"
            cd ~/Downloads
            wget -q https://freeshell.de/arturwro/downloads/macports-bin.tar.gz
            sudo tar -xzf macports-bin.tar.gz -C /
@@ -78,13 +78,14 @@ jobs:
       if: ${{ inputs.install_macports }}
       run: |
            sudo /opt/local/bin/port selfupdate
-           echo ":: Set variables ::"
+           echo "::notice:: Set variables"
            echo "/opt/local/bin" >> $GITHUB_PATH
            echo "/opt/local/sbin" >> $GITHUB_PATH
 
     - name: Install MacPorts Packages
       if: ${{ inputs.install_macports }}
       run: |
+           echo "::notice:: PATH=${PATH}"
            PACKAGES=${{ inputs.macports_packages }}
            if [ ! -z PACKAGES ]
              OPTS="install"
@@ -93,9 +94,9 @@ jobs:
                do
                OPTS="$OPTS $pkg"
                done
-             port $OPTS
+             /opt/local/bin/port $OPTS
            else
-             echo ":: No packages to install ::"
+             echo "::warning:: No packages to install"
            fi
 
     - name: Setup tmate session
