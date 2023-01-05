@@ -56,8 +56,8 @@ jobs:
            echo "::notice:: Install macports mode : ${{ inputs.install_macports_mode }}"
            echo "::notice:: Choosen packages : ${{ inputs.macports_packages }}"
            echo "::notice:: +universal : ${{ inputs.universal }}"
-           [[ ! -z ${{ inputs.macports_packages }} ]] && echo "::notice::Packages to install ${{ inputs.macports_packages }}" || echo "::warning::Nothing to install"
            [[ ${{ inputs.universal }} == true ]] && echo "::notice::+universal choosen" || echo "::warning::+universal not choosen"
+           [[ ! -z ${{ inputs.macports_packages }} ]] && echo "::notice::Packages to install ${{ inputs.macports_packages }}" || echo "::warning::Nothing to install"
 
     - name: Prepare environment
       run: |
