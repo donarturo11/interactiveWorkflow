@@ -25,14 +25,14 @@ jobs:
     - name: Setup Base MINGW env
       uses: msys2/setup-msys2@v2
       with:
-        msystem: MINGW64
+        msystem: UCRT6464
         update: true
 
     - name: Setup MinGW Build environment
       uses: msys2/setup-msys2@v2
       with:
-        msystem: MINGW64
-        install: base base-devel tree autoconf automake-wrapper dos2unix zip git mingw-w64-x86_64-toolchain mingw-w64-x86_64-cmake
+        msystem: UCRT64
+        install: base base-devel tree autoconf automake-wrapper dos2unix zip git mingw-w64-ucrt-x86_64-toolchain mingw-w64-x86_64-cmake
 
     - name: Prepare environment
       run: |
