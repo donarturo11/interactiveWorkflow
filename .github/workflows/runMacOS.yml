@@ -137,6 +137,7 @@ jobs:
            [[ -x /opt/local ]] && tar -czf ~/macports-bin/macports-bin.tar.gz /opt/local/
 
     - name: Install MacPorts Packages
+      timeout-minutes: 720
       if: ${{ inputs.install_macports }}
       run: |
            echo "::notice:: PATH=${PATH}"
