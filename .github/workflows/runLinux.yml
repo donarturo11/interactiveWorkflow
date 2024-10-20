@@ -2,6 +2,18 @@ name: Run Linux
 
 on:
   workflow_dispatch:
+     inputs:
+      terminal_session:
+        type: choice
+        description: Choose terminal session
+        default: 'none'
+        options:
+        - tmate
+        - none
+      script:
+        description: 'input script'
+        required: false
+        type: string
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -20,9 +32,11 @@ jobs:
 
     - name: Prepare environment
       run: mkdir ~/artifacts || echo "~/artifacts already created"
-
+    - name: Exec script
+      run: ${{ inputs.script }}
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
+      if: ${{ inputs.terminal_session == 'tmate' }}
       with:
           limit-access-to-actor: true
           #install-dependencies: false
