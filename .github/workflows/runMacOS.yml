@@ -176,8 +176,11 @@ jobs:
     - name: Execute eventual script
       run: |
           export SCRIPT="${HOME}/script.sh"
-          ${SCRIPT} || echo "::warning::Script ${SCRIPT} does not exist"
-
+          if [[ -e ${SCRIPT} ]]; then
+              chmod +x ${SCRIPT} || echo "::warning::"
+              ${SCRIPT} || echo "::warning::Script ${SCRIPT} does not exist"
+          fi
+          
     - name: Upload MacPorts
       if: ${{ inputs.install_macports_mode == 'build' }}
       uses: actions/upload-artifact@v3.0.0
