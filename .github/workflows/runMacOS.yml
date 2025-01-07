@@ -88,53 +88,7 @@ jobs:
            mkdir ~/artifacts || echo "::notice:: ~/artifacts already created"
            echo "::notice:: Terminal session : ${{ inputs.terminal_session }}"
 
-    - name: Fetch MacPorts
-      if: ${{ inputs.install_macports_mode == 'fetch' }}
-      run: |
-           echo "::notice:: Fetchinng MacPorts"
-           cd ~/Downloads
-           wget -q https://freeshell.de/arturwro/downloads/macports-bin.tar.gz
-           sudo tar -xzf macports-bin.tar.gz -C /
-
-
-    - name: Build MacPorts
-      if: ${{ inputs.install_macports_mode == 'build' }}
-      run: |
-           mkdir -p ~/mports
-           cd ~/mports
-           git clone https://github.com/macports/macports-base.git
-           cd macports-base
-           git checkout v2.8.0  # skip this if you want to use the development version
-           cd ~/mports/macports-base
-           echo "::group::Build and install"
-           echo "::notice:: Configure"
-           ./configure --enable-readline > /dev/null
-           echo "::notice:: Build"
-           make > /dev/null
-           echo "::notice:: Install"
-           sudo make install > /dev/null
-           make distclean > /dev/null
-           echo "::endgroup::"
-
-    - name: Install MacPorts
-      if: ${{ inputs.install_macports }}
-      run: |
-           echo "::notice:: Port self update"
-           sudo /opt/local/bin/port selfupdate
-           echo "::notice:: Set variables"
-           echo "/opt/local/bin" >> $GITHUB_PATH
-           echo "/opt/local/sbin" >> $GITHUB_PATH
-           if [[ ${{ inputs.universal }} == true ]]; then
-               echo "::notice:: Adding Universal"
-               sudo bash -c "echo +universal >> /opt/local/etc/macports/variants.conf"
-               echo "::notice:: universal added"
-           fi
-
-    - name: Backup MacPorts
-      if: ${{ inputs.install_macports_mode == 'build' }}
-      run: |
-           mkdir ~/macports-bin
-           [[ -x /opt/local ]] && tar -czf ~/macports-bin/macports-bin.tar.gz /opt/local/
+    - uses: melusina-org/setup-macports@v1
 
     - name: Install MacPorts Packages
       timeout-minutes: 720
