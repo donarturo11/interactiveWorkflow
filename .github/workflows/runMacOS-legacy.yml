@@ -1,0 +1,152 @@
+name: Run MacOS (legacy)
+
+on:
+  workflow_dispatch:
+    inputs:
+      terminal_session:
+        type: choice
+        description: Choose terminal session
+        default: 'none'
+        options:
+        - tmate
+        - upterm
+        - none
+      install_macports_mode:
+        type: choice
+        description: Build or fetch binary Macports
+        default: 'fetch'
+        options:
+        - build
+        - fetch
+      install_macports:
+        description: 'Install MacPorts'
+        required: false
+        type: boolean
+      macports_dev:
+        description: 'Development version'
+        required: false
+        type: boolean
+      universal:
+        description: '+universal'
+        required: false
+        type: boolean
+      macports_packages:
+        description: 'Install MacPorts Packages'
+        required: false
+        type: string
+
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+
+
+jobs:
+  build-macos:
+    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
+    # You can convert this to a matrix build if you need cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    runs-on: macos-11
+    timeout-minutes: 720
+    steps:
+    - uses: actions/checkout@v3
+    - name: Print settings
+      run: |
+           echo "::notice:: Terminal session : ${{ inputs.terminal_session }}"
+           echo "::notice:: Install macports mode : ${{ inputs.install_macports_mode }}"
+           echo "::notice:: Choosen packages : ${{ inputs.macports_packages }}"
+           echo "::notice:: +universal : ${{ inputs.universal }}"
+           if [ ${{ inputs.universal }} == true ]
+           then
+             echo "::notice::+universal choosen"
+           else
+             echo "::warning::+universal not choosen"
+           fi
+
+           if [ ! -z "${{ inputs.macports_packages }}" ]
+           then
+             echo "::notice::Packages to install ${{ inputs.macports_packages }}"
+           else
+             echo "::warning::Nothing to install"
+           fi
+
+           declare -i count
+           for i in ${{ inputs.macports_packages }}
+           do
+             count=+1
+           done
+
+           if [ $count == 0 ]
+           then
+             echo "::warning::Nothing to install"
+           else
+             echo "::notice::Packages to install ${{ inputs.macports_packages }}"
+           fi
+
+    - name: Prepare environment
+      run: |
+           mkdir ~/artifacts || echo "::notice:: ~/artifacts already created"
+           echo "::notice:: Terminal session : ${{ inputs.terminal_session }}"
+
+    - uses: melusina-org/setup-macports@v1
+
+    - name: Install MacPorts Packages
+      timeout-minutes: 720
+      if: ${{ inputs.install_macports }}
+      run: |
+           echo "::notice:: PATH=${PATH}"
+           if [ ! -z "${{ inputs.macports_packages }}" ]; then
+             echo "::notice:: installing ${{ inputs.macports_packages }}"
+             sudo /opt/local/bin/port -N install ${{ inputs.macports_packages }} || echo "::warning::Installing failed"
+           else
+             echo "::warning:: No packages to install"
+           fi
+
+    - name: Prepare to upload packages
+      if: ${{ inputs.install_macports }}
+      run: |
+           [[ ! -x ~/artifacts/pkgs ]] && mkdir -p ~/artifacts/pkgs
+           cd /opt/local/var/macports/software/
+           for i in $(find . -name *.tbz2)
+           do
+             cp -v $i ~/artifacts/pkgs/ || echo "::warning::copying $i FAILED"
+           done
+
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+      if: ${{ inputs.terminal_session == 'tmate' }}
+      with:
+          limit-access-to-actor: true
+          #install-dependencies: false
+      timeout-minutes: 60
+
+    - name: Setup upterm session
+      uses: lhotari/action-upterm@v1
+      if: ${{ inputs.terminal_session == 'upterm' }}
+      with:
+        ## limits ssh access and adds the ssh public key for the user which triggered the workflow
+        limit-access-to-actor: true
+
+    - name: Execute eventual script
+      run: |
+          export SCRIPT="${HOME}/script.sh"
+          if [[ -e ${SCRIPT} ]]; then
+              chmod +x ${SCRIPT} || echo "::warning::"
+              ${SCRIPT} || echo "::warning::Script ${SCRIPT} does not exist"
+          fi
+          
+    - name: Upload MacPorts
+      if: ${{ inputs.install_macports_mode == 'build' }}
+      uses: actions/upload-artifact@v3.0.0
+      with:
+        name: macports-bin
+        path: ~/macports-bin/
+
+    - name: Upload files
+      uses: actions/upload-artifact@v3.0.0
+      with:
+        name: interactiveWorkflowFiles
+        path: ~/artifacts/
+
+
+
