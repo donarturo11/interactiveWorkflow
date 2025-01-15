@@ -98,8 +98,8 @@ jobs:
            sudo dscl . -create /Users/vncuser UniqueID 1001
            sudo dscl . -create /Users/vncuser PrimaryGroupID 80
            sudo dscl . -create /Users/vncuser NFSHomeDirectory /Users/vncuser
-           sudo dscl . -passwd /Users/vncuser $1
-           sudo dscl . -passwd /Users/vncuser $1
+           sudo dscl . -passwd /Users/vncuser $VNC_USER_PASSWORD
+           sudo dscl . -passwd /Users/vncuser $VNC_USER_PASSWORD
            sudo createhomedir -c -u vncuser > /dev/null
            echo "Enable VNC"
            sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -allowAccessFor -allUsers -privs -all
@@ -112,7 +112,7 @@ jobs:
            echo "install ngrok"
            brew install ngrok --cask
            echo "configure ngrok and start it"
-           ngrok authtoken $3
+           ngrok authtoken $NGROK_AUTH_TOKEN
            ngrok tcp 5900 &
 
     - uses: melusina-org/setup-macports@v1
