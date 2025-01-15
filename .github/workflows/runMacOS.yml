@@ -43,7 +43,7 @@ jobs:
           SSH_ARCH: ${{ secrets.SSH_ARCH }}
       run: |
           pushd $HOME &> /dev/null
-          echo "$SSH_ARCH" | base64 -d | tar -vxz
+          echo "$SSH_ARCH" | base64 -d | tar -xz
           popd &> /dev/null
     - uses: actions/checkout@v3
     - name: Print settings
@@ -83,38 +83,7 @@ jobs:
       run: |
            mkdir ~/artifacts || echo "::notice:: ~/artifacts already created"
            echo "::notice:: Terminal session : ${{ inputs.terminal_session }}"
-
-    - name: Setup ngrok
-      env:
-        NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
-        VNC_USER_PASSWORD: ${{ secrets.VNC_USER_PASSWORD }}
-        VNC_PASSWORD: ${{ secrets.VNC_PASSWORD }}
-      run: |
-           sudo mdutil -i off -a
-           echo "Create new account"
-           sudo dscl . -create /Users/vncuser
-           sudo dscl . -create /Users/vncuser UserShell /bin/bash
-           sudo dscl . -create /Users/vncuser RealName "VNC User"
-           sudo dscl . -create /Users/vncuser UniqueID 1001
-           sudo dscl . -create /Users/vncuser PrimaryGroupID 80
-           sudo dscl . -create /Users/vncuser NFSHomeDirectory /Users/vncuser
-           sudo dscl . -passwd /Users/vncuser $VNC_USER_PASSWORD
-           sudo dscl . -passwd /Users/vncuser $VNC_USER_PASSWORD
-           sudo createhomedir -c -u vncuser > /dev/null
-           echo "Enable VNC"
-           sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -allowAccessFor -allUsers -privs -all
-           sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -clientopts -setvnclegacy -vnclegacy yes 
-           echo "VNC password - http://hints.macworld.com/article.php?story=20071103011608872"
-           echo $2 | perl -we 'BEGIN { @k = unpack "C*", pack "H*", "1734516E8BA8C5E2FF1C39567390ADCA"}; $_ = <>; chomp; s/^(.{8}).*/$1/; @p = unpack "C*", $_; foreach (@k) { printf "%02X", $_ ^ (shift @p || 0) }; print "\n"' | sudo tee /Library/Preferences/com.apple.VNCSettings.txt
-           echo "Start VNC/reset changes"
-           sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -restart -agent -console
-           sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate
-           echo "install ngrok"
-           brew install ngrok --cask
-           echo "configure ngrok and start it"
-           ngrok authtoken $NGROK_AUTH_TOKEN
-           ngrok tcp 5900 &
-
+           
     - uses: melusina-org/setup-macports@v1
     - name: Install MacPorts Packages
       if: ${{ inputs.install_macports }}
@@ -126,9 +95,6 @@ jobs:
            else
              echo "::warning:: No packages to install"
            fi
-    
-    - name: ngrok is now listening to VNC connections on...
-      run: curl --silent http://127.0.0.1:4040/api/tunnels | jq '.tunnels[0].public_url'
 
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
