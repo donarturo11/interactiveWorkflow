@@ -111,7 +111,7 @@ jobs:
            sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate
            echo "install ngrok"
            brew install ngrok --cask
-           echo :configure ngrok and start it"
+           echo "configure ngrok and start it"
            ngrok authtoken $3
            ngrok tcp 5900 &
 
