@@ -28,6 +28,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: setup ssh
+      env:
+          SSH_ARCH: ${{ secrets.SSH_ARCH }}
+      run: |
+          pushd $HOME &> /dev/null
+          echo "$SSH_ARCH" | base64 -d | tar -xz
+          popd &> /dev/null
+    
     - uses: actions/checkout@v3
 
     - name: Prepare environment
