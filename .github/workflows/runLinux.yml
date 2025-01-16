@@ -36,7 +36,7 @@ jobs:
           echo "$SSH_ARCH" | base64 -d | tar -xz
           popd &> /dev/null
     
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Prepare environment
       run: mkdir ~/artifacts || echo "~/artifacts already created"
@@ -51,7 +51,7 @@ jobs:
       timeout-minutes: 60
 
     - name: Upload files
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: interactiveWorkflowFiles
         path: ~/artifacts/
