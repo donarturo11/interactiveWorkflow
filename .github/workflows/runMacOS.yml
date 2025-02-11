@@ -127,7 +127,7 @@ jobs:
           
     - name: Upload MacPorts
       if: ${{ inputs.install_macports_mode == 'build' }}
-      uses: actions/upload-artifact@v3.0.0
+      uses: actions/upload-artifact@v4
       with:
         name: macports-bin
         path: ~/macports-bin/
