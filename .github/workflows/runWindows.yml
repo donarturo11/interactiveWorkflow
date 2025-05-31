@@ -36,7 +36,9 @@ jobs:
 
     - name: Prepare environment
       run: |
-           mkdir /d/artifacts
+           ARTIFACTS_DIR=$(cygpath -m ${{github.workspace}})/artifacts
+           [ ! -e $ARTIFACTS_DIR ] && mkdir -p $ARTIFACTS_DIR
+           echo "ARTIFACTS_DIR=$ARTIFACTS_DIR" >> $GITHUB_ENV
            ls -lah
 
     - name: Setup tmate session
@@ -50,7 +52,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: interactiveWorkflowFiles
-        path: /d/artifacts/
-
-
-
+        path: ${{github.workspace}}/artifacts/
