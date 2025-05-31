@@ -36,7 +36,7 @@ jobs:
 
     - name: Prepare environment
       run: |
-           ARTIFACTS_DIR=$(cygpath -m ${{github.workspace}})/artifacts
+           ARTIFACTS_DIR=$(cygpath -u ${GITHUB_WORKSPACE})/artifacts
            [ ! -e $ARTIFACTS_DIR ] && mkdir -p $ARTIFACTS_DIR
            echo "ARTIFACTS_DIR=$ARTIFACTS_DIR" >> $GITHUB_ENV
            ls -lah
