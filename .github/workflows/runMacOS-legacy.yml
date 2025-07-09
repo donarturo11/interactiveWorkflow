@@ -1,4 +1,4 @@
-name: Run MacOS
+name: Run MacOS Legacy
 
 on:
   workflow_dispatch:
