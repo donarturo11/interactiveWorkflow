@@ -1,4 +1,4 @@
-name: Run MacOS (legacy)
+name: Run MacOS
 
 on:
   workflow_dispatch:
@@ -11,19 +11,8 @@ on:
         - tmate
         - upterm
         - none
-      install_macports_mode:
-        type: choice
-        description: Build or fetch binary Macports
-        default: 'fetch'
-        options:
-        - build
-        - fetch
       install_macports:
         description: 'Install MacPorts'
-        required: false
-        type: boolean
-      macports_dev:
-        description: 'Development version'
         required: false
         type: boolean
       universal:
@@ -49,6 +38,13 @@ jobs:
     runs-on: macos-13
     timeout-minutes: 720
     steps:
+    - name: setup ssh
+      env:
+          SSH_ARCH: ${{ secrets.SSH_ARCH }}
+      run: |
+          pushd $HOME &> /dev/null
+          echo "$SSH_ARCH" | base64 -d | tar -xz
+          popd &> /dev/null
     - uses: actions/checkout@v3
     - name: Print settings
       run: |
@@ -87,11 +83,9 @@ jobs:
       run: |
            mkdir ~/artifacts || echo "::notice:: ~/artifacts already created"
            echo "::notice:: Terminal session : ${{ inputs.terminal_session }}"
-
+           
     - uses: melusina-org/setup-macports@v1
-
     - name: Install MacPorts Packages
-      timeout-minutes: 720
       if: ${{ inputs.install_macports }}
       run: |
            echo "::notice:: PATH=${PATH}"
@@ -102,30 +96,14 @@ jobs:
              echo "::warning:: No packages to install"
            fi
 
-    - name: Prepare to upload packages
-      if: ${{ inputs.install_macports }}
-      run: |
-           [[ ! -x ~/artifacts/pkgs ]] && mkdir -p ~/artifacts/pkgs
-           cd /opt/local/var/macports/software/
-           for i in $(find . -name *.tbz2)
-           do
-             cp -v $i ~/artifacts/pkgs/ || echo "::warning::copying $i FAILED"
-           done
-
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
       if: ${{ inputs.terminal_session == 'tmate' }}
-      with:
-          limit-access-to-actor: true
-          #install-dependencies: false
-      timeout-minutes: 60
+      timeout-minutes: 720
 
     - name: Setup upterm session
       uses: lhotari/action-upterm@v1
       if: ${{ inputs.terminal_session == 'upterm' }}
-      with:
-        ## limits ssh access and adds the ssh public key for the user which triggered the workflow
-        limit-access-to-actor: true
 
     - name: Execute eventual script
       run: |
@@ -134,19 +112,28 @@ jobs:
               chmod +x ${SCRIPT} || echo "::warning::"
               ${SCRIPT} || echo "::warning::Script ${SCRIPT} does not exist"
           fi
+
+    - name: Prepare to upload packages
+      if: ${{ inputs.install_macports }}
+      run: |
+           [[ ! -x ~/artifacts/pkgs-arm ]] && mkdir -p ~/artifacts/pkgs-arm
+           [[ ! -x ~/artifacts/pkgs ]] && mkdir -p ~/artifacts/pkgs
+           [[ ! -x ~/artifacts/archives-arm ]] && mkdir -p ~/artifacts/archives-arm
+           [[ ! -x ~/artifacts/archives ]] && mkdir -p ~/artifacts/archives
+           find /opt/local -iname "*.pkg" -exec cp -Rv {} ~/artifacts/pkgs-arm \;
+           find /usr/local -iname "*.pkg" -exec cp -Rv {} ~/artifacts/pkgs \;
+           find /opt/local -iname "*.bz2" -or -iname "*.txz" -exec cp -Rv {} ~/artifacts/archives-arm \;
+           find /usr/local -iname "*.bz2" -or -iname "*.txz" -exec cp -Rv {} ~/artifacts/archives \;
           
     - name: Upload MacPorts
       if: ${{ inputs.install_macports_mode == 'build' }}
-      uses: actions/upload-artifact@v3.0.0
+      uses: actions/upload-artifact@v4
       with:
         name: macports-bin
         path: ~/macports-bin/
 
     - name: Upload files
-      uses: actions/upload-artifact@v3.0.0
+      uses: actions/upload-artifact@v4
       with:
         name: interactiveWorkflowFiles
         path: ~/artifacts/
-
-
-
