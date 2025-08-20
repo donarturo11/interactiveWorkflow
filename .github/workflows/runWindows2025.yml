@@ -1,0 +1,55 @@
+name: Run Windows 2025
+
+on:
+  workflow_dispatch:
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+
+
+jobs:
+  run-windows:
+    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
+    # You can convert this to a matrix build if you need cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    runs-on: windows-2025
+    defaults:
+      run:
+        shell: msys2 {0}
+
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Base MINGW env
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: UCRT64
+        update: true
+
+    - name: Setup MinGW Build environment
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: UCRT64
+        install: base base-devel tree autoconf automake-wrapper dos2unix zip git mingw-w64-ucrt-x86_64-toolchain mingw-w64-x86_64-cmake
+
+    - name: Prepare environment
+      run: |
+           ARTIFACTS_DIR=$(cygpath -u ${GITHUB_WORKSPACE})/artifacts
+           [ ! -e $ARTIFACTS_DIR ] && mkdir -p $ARTIFACTS_DIR
+           echo "ARTIFACTS_DIR=$ARTIFACTS_DIR" >> $GITHUB_ENV
+           ls -lah
+
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+      with:
+          limit-access-to-actor: true
+          #install-dependencies: false
+      timeout-minutes: 60
+
+    - name: Upload files
+      uses: actions/upload-artifact@v4
+      with:
+        name: interactiveWorkflowFiles
+        path: ${{github.workspace}}/artifacts/
