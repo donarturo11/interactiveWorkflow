@@ -1,0 +1,39 @@
+name: Run Script
+
+on:
+  workflow_dispatch:
+     inputs:
+      runs-on:
+        description: 'OS'
+        required: true
+        type: string
+      script:
+        description: 'input script'
+        required: true
+        type: string
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+
+jobs:
+  run-script:
+    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
+    # You can convert this to a matrix build if you need cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    runs-on: ${{ inputs.runs-on }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - name: setup ssh
+      env:
+          SSH_ARCH: ${{ secrets.SSH_ARCH }}
+      run: |
+          pushd $HOME &> /dev/null
+          echo "$SSH_ARCH" | base64 -d | tar -xz
+          popd &> /dev/null
+    
+    - uses: actions/checkout@v4
+    - name: run script
+      run: ${{ inputs.script }}
