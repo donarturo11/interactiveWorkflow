@@ -35,6 +35,6 @@ jobs:
         uses: actions/checkout@v4
       - name: test
         run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'cd $HOME; tar -cz CI' | tar  -xzC .
+          (ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'cd $HOME; tar -cz CI' | tar  -xzC .) &> /dev/null
           bash CI/main_script.sh
 
