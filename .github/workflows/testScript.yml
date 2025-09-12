@@ -1,0 +1,40 @@
+name: Run test script
+on: workflow_dispatch
+env:
+  BUILD_TYPE: Release
+  CMAKE_POLICY_VERSION_MINIMUM: 3.5
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - name: windows-msvc
+            os: windows-2022
+            is_msvc: true
+          - name: windows-mingw
+            os: windows-2025
+          - name: linux-x86_64
+            os: ubuntu-latest
+          - name: macos-arm64
+            os: macos-latest
+          - name: macos-x86_64
+            os: macos-13
+          - name: macos-universal
+            os: macos-latest
+    runs-on: ${{matrix.os}}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: setup ssh
+        env:
+          SSH_ARCH: ${{ secrets.SSH_ARCH }}
+        run: |
+          echo "$SSH_ARCH" | base64 -d | tar -xz -C $HOME
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: test
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'cd $HOME; tar -cz CI' | tar  -xzC .
+          bash CI/main_script.sh
+
