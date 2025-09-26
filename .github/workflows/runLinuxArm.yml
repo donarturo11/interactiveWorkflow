@@ -1,0 +1,60 @@
+name: Run Linux Arm
+
+on:
+  workflow_dispatch:
+     inputs:
+      terminal_session:
+        type: choice
+        description: Choose terminal session
+        default: 'none'
+        options:
+        - tmate
+        - none
+      script:
+        description: 'input script'
+        required: false
+        type: string
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+
+
+jobs:
+  run-linux:
+    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
+    # You can convert this to a matrix build if you need cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    runs-on: ubuntu-24.04-arm
+
+    steps:
+    - name: setup ssh
+      env:
+          SSH_ARCH: ${{ secrets.SSH_ARCH }}
+      run: |
+          pushd $HOME &> /dev/null
+          echo "$SSH_ARCH" | base64 -d | tar -xz
+          popd &> /dev/null
+    
+    - uses: actions/checkout@v4
+
+    - name: Prepare environment
+      run: mkdir ~/artifacts || echo "~/artifacts already created"
+    - name: Exec script
+      run: ${{ inputs.script }}
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+      if: ${{ inputs.terminal_session == 'tmate' }}
+      with:
+          limit-access-to-actor: true
+          #install-dependencies: false
+      timeout-minutes: 60
+
+    - name: Upload files
+      uses: actions/upload-artifact@v4
+      with:
+        name: interactiveWorkflowFiles
+        path: ~/artifacts/
+
+
+
