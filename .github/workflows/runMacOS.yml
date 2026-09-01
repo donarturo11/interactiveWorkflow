@@ -74,7 +74,7 @@ jobs:
       timeout-minutes: 720
 
     - name: Setup upterm session
-      uses: lhotari/action-upterm@v1
+      uses: owenthereal/action-upterm@v1
       if: ${{ inputs.terminal_session == 'upterm' }}
 
     - name: Execute eventual script
