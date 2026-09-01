@@ -74,18 +74,6 @@ jobs:
       run: |
            mkdir ~/artifacts || echo "::notice:: ~/artifacts already created"
            echo "::notice:: Terminal session : ${{ inputs.terminal_session }}"
-           
-    - uses: melusina-org/setup-macports@v1
-    - name: Install MacPorts Packages
-      if: ${{ inputs.install_macports }}
-      run: |
-           echo "::notice:: PATH=${PATH}"
-           if [ ! -z "${{ inputs.macports_packages }}" ]; then
-             echo "::notice:: installing ${{ inputs.macports_packages }}"
-             sudo /opt/local/bin/port -N install ${{ inputs.macports_packages }} || echo "::warning::Installing failed"
-           else
-             echo "::warning:: No packages to install"
-           fi
 
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
@@ -104,18 +92,6 @@ jobs:
               ${SCRIPT} || echo "::warning::Script ${SCRIPT} does not exist"
           fi
 
-    - name: Prepare to upload packages
-      if: ${{ inputs.install_macports }}
-      run: |
-           [[ ! -x ~/artifacts/pkgs-arm ]] && mkdir -p ~/artifacts/pkgs-arm
-           [[ ! -x ~/artifacts/pkgs ]] && mkdir -p ~/artifacts/pkgs
-           [[ ! -x ~/artifacts/archives-arm ]] && mkdir -p ~/artifacts/archives-arm
-           [[ ! -x ~/artifacts/archives ]] && mkdir -p ~/artifacts/archives
-           find /opt/local -iname "*.pkg" -exec cp -Rv {} ~/artifacts/pkgs-arm \;
-           find /usr/local -iname "*.pkg" -exec cp -Rv {} ~/artifacts/pkgs \;
-           find /opt/local -iname "*.bz2" -or -iname "*.txz" -exec cp -Rv {} ~/artifacts/archives-arm \;
-           find /usr/local -iname "*.bz2" -or -iname "*.txz" -exec cp -Rv {} ~/artifacts/archives \;
-          
     - name: Upload MacPorts
       if: ${{ inputs.install_macports_mode == 'build' }}
       uses: actions/upload-artifact@v4
