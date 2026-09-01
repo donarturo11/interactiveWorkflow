@@ -35,7 +35,11 @@ jobs:
           pushd $HOME &> /dev/null
           echo "$SSH_ARCH" | base64 -d | tar -xz
           popd &> /dev/null
-    
+    - name: get owncloud token
+      run: |
+          mkdir ~/.secrets
+          echo "${{ secrets.OWNCLOUD_TOKEN }}" >> ~/.secrets/owncloud-token
+
     - uses: actions/checkout@v4
 
     - name: Prepare environment

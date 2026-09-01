@@ -11,19 +11,6 @@ on:
         - tmate
         - upterm
         - none
-      install_macports:
-        description: 'Install MacPorts'
-        required: false
-        type: boolean
-      universal:
-        description: '+universal'
-        required: false
-        type: boolean
-      macports_packages:
-        description: 'Install MacPorts Packages'
-        required: false
-        type: string
-
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -45,6 +32,10 @@ jobs:
           pushd $HOME &> /dev/null
           echo "$SSH_ARCH" | base64 -d | tar -xz
           popd &> /dev/null
+    - name: get owncloud token
+      run: |
+          mkdir ~/.secrets
+          echo "${{ secrets.OWNCLOUD_TOKEN }}" >> ~/.secrets/owncloud-token
     - uses: actions/checkout@v3
     - name: Print settings
       run: |
